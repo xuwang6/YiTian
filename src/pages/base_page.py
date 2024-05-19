@@ -15,7 +15,10 @@ from src.common import *
 
 class BasePage:
     def __init__(self):
-        self.d = u2.connect(adb.device_list)
+        self.d = u2.connect(adb.device_list[0])
+
+    def wait_click(self):
+        self.d
 
 
 
