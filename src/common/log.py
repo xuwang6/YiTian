@@ -12,6 +12,7 @@ import logging
 import os.path
 import sys
 import time
+from src.common.constants import LOG_PATH
 
 
 class Logger:
@@ -54,3 +55,6 @@ class Logger:
 
     def get_logger(self):
         return self.logger
+
+
+log = Logger("YiTian", LOG_PATH).get_logger()

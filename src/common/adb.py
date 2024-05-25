@@ -7,15 +7,15 @@
 # Description       :
 #
 # Copyright (c) 2024, All rights reserved.
-import os
 import subprocess
-from src.common import *
+from src.common.log import log
 
 
 class ADB:
     def __init__(self):
-        self.adb_exist = False
-        self.device_list = []
+        self.adb_env_status = False
+        self.adb_connect_status = False
+        self.devices = self.devices_list()
         self.os_type = ""
 
     def check_adb_env(self):
@@ -26,29 +26,33 @@ class ADB:
         try:
             r = subprocess.run(["adb", "version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             if r.returncode == 0:
-                self.adb_exist = True
+                self.adb_env_status = True
                 log.debug("adb环境变量已配置：\n" + r.stdout)
             else:
                 log.debug("adb未配置环境变量！")
         except Exception as e:
             log.debug(e)
-        return self.adb_exist
+        return self.adb_env_status
 
-    def list_devices(self):
+    def devices_list(self):
         """
         获取adb 设备
         :return:
         """
+        d_list = []
         if self.check_adb_env():
             r = subprocess.Popen(["adb", "devices"], encoding="utf8", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             for line in r.stdout.readlines():
                 line = line.strip()
                 if line.endswith("device"):
-                    self.device_list.append(line.split("\t")[0])
+                    d_list.append(line.split("\t")[0])
+            if len(d_list) < 1:
+                log.debug("当前未检测到adb设备， 请人工确认！")
+                exit()
         else:
             log.debug("adb环境异常！")
-        log.debug("设备列表：" + str(self.device_list))
-        return self.device_list
+        log.debug("设备列表：" + str(d_list))
+        return d_list
 
     @staticmethod
     def connect(ip_device):
@@ -75,4 +79,3 @@ class ADB:
 
 if __name__ == "__main__":
     adb = ADB()
-    adb.list_devices()
