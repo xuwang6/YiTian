@@ -58,3 +58,4 @@ class Logger:
 
 
 log = Logger("YiTian", LOG_PATH).get_logger()
+print("------------>" + str(id(log)))

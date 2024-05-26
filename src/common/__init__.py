@@ -1,4 +1,4 @@
 from src.common.adb import ADB
-import src.common.constants
+from src.common.constants import *
 
 adb = ADB()
