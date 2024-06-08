@@ -47,14 +47,14 @@ class BasePage:
             locator = LOCATOR_DIC[args[0].split("_")[0]][args[0]]
             print("元素对象：" + locator)
             if locator.startswith("//"):
-                print("------>1")
+                print("------>xpath")
                 self._obj = self.d.xpath(locator)
             else:
                 dic = {}
                 for item in locator.strip().split(","):
                     key, value = item.split("=")
                     self._obj = value.strip('"')
-                print("------>2")
+                print("------>element")
                 self._obj = self.d(**dic)
             return func(self, *args, **kwargs)
 
@@ -67,9 +67,9 @@ class BasePage:
         :param locator:
         :return:
         """
-        print(self._obj)
-        # self._obj.click()
-        self.d(text="应用").click()
+        self._obj.wait(timeout=10)
+        self._obj.click()
+        # self.d(text="Display").click()
 
     def open_app(self, package_name):
         """
@@ -80,8 +80,32 @@ class BasePage:
         self.d.app_start(package_name)
         time.sleep(3)
 
+    def close_app(self, package_name):
+        """
+        关闭应用
+        :param package_name:
+        :return:
+        """
+        self.d.app_stop(package_name)
+        time.sleep(1)
+
+    def input_text(self, text: str, clear=False, enter=True):
+        """
+        输入文字
+        :param enter:
+        :param clear:
+        :param text:
+        :return:
+        """
+        self.d.send_keys(text, clear)
+        time.sleep(1)
+        if enter:
+            self.d.press("enter")
+
 
 if __name__ == "__main__":
     bp = BasePage()
-    bp.open_app(PACKAGES_DIC["设置"])
-    bp.wait_click("设置_BUTTON_应用")
+    bp.close_app(PACKAGES_DIC["Chrome"])
+    bp.open_app(PACKAGES_DIC["Chrome"])
+    bp.wait_click("Chrome_EDIT_搜索框")
+    bp.input_text("www.baidu.com", clear=True, enter=True)

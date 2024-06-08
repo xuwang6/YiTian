@@ -1,6 +1,13 @@
 {
   "设置": {
     "设置_BUTTON_个性化": "text=\"个性化\"",
-    "设置_BUTTON_应用": "text=\"应用\""
+    "设置_BUTTON_应用": "text=\"应用\"",
+    "设置_BUTTON_Display": "text=\"Display\"",
+    "设置_Display_BUTTON_Back": "//android.widget.ImageButton"
+  },
+  "Chrome": {
+    "Chrome_EDIT_搜索框": "resourceId=com.android.chrome:id/search_box_text",
+    "Chrome_百度_EDIT_搜索框": "resourceId=index-kw",
+    "Chrome_百度_BUTTON_搜索": "text='百度一下'"
   }
 }

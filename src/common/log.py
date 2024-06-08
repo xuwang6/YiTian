@@ -46,7 +46,7 @@ class Logger:
         s_handler.setLevel(self.logger.level)
 
         # 定义handler的输出格式
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(name)s %(levelname)s %(filename)s:%(lineno)d - %(message)s')
         f_handler.setFormatter(formatter)
         s_handler.setFormatter(formatter)
 

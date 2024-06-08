@@ -9,10 +9,19 @@
 # Copyright (c) 2024, All rights reserved.
 import pytest
 
+from src.pages.base_page import BasePage
+from src.common import *
 
-def test_demo():
-    pass
+bp = BasePage()
+
+
+class TestCase:
+    def test_demo(self):
+        bp.close_app(PACKAGES_DIC["Chrome"])
+        bp.open_app(PACKAGES_DIC["Chrome"])
+        bp.wait_click("Chrome_EDIT_搜索框")
+        bp.input_text("www.baidu.com", clear=True, enter=True)
 
 
 if __name__ == "__main__":
-    pytest.main()
+    pytest.main(["-vs"])

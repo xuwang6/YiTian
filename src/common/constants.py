@@ -11,7 +11,7 @@ import json
 import os.path
 
 # 路径
-PROJECT_ROOT = os.path.abspath("__file__").split("src")[0]
+PROJECT_ROOT = os.path.abspath(__file__).split("src")[0]
 LOG_PATH = os.path.join(PROJECT_ROOT, "logs")
 REPORT_PATH = os.path.join(PROJECT_ROOT, "reports")
 RESOURCE_PATH = os.path.join(PROJECT_ROOT, "resources")
