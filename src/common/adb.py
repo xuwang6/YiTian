@@ -8,7 +8,7 @@
 #
 # Copyright (c) 2024, All rights reserved.
 import subprocess
-from src.common.log import log
+from src.common.log import logger
 
 
 class ADB:
@@ -27,11 +27,11 @@ class ADB:
             r = subprocess.run(["adb", "version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             if r.returncode == 0:
                 self.adb_env_status = True
-                log.debug("adb环境变量已配置：\n" + r.stdout)
+                logger.debug("adb环境变量已配置：\n" + r.stdout)
             else:
-                log.debug("adb未配置环境变量！")
+                logger.debug("adb未配置环境变量！")
         except Exception as e:
-            log.debug(e)
+            logger.debug(e)
         return self.adb_env_status
 
     def devices_list(self):
@@ -47,11 +47,11 @@ class ADB:
                 if line.endswith("device"):
                     d_list.append(line.split("\t")[0])
             if len(d_list) < 1:
-                log.debug("当前未检测到adb设备， 请人工确认！")
+                logger.debug("当前未检测到adb设备， 请人工确认！")
                 exit()
         else:
-            log.debug("adb环境异常！")
-        log.debug("设备列表：" + str(d_list))
+            logger.debug("adb环境异常！")
+        logger.debug("设备列表：" + str(d_list))
         return d_list
 
     @staticmethod

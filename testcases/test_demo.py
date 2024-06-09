@@ -16,9 +16,10 @@ bp = BasePage()
 
 
 class TestCase:
-    def test_demo(self):
+    def test_chrome_cpu_mem_search(self):
         bp.close_app(PACKAGES_DIC["Chrome"])
         bp.open_app(PACKAGES_DIC["Chrome"])
+        logger.info("点击输入框...")
         bp.wait_click("Chrome_EDIT_搜索框")
         bp.input_text("www.baidu.com", clear=True, enter=True)
 

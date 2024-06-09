@@ -8,24 +8,28 @@
 #
 # Copyright (c) 2024, All rights reserved.
 import pytest
+from src.common import *
 
 
 @pytest.fixture(scope="session", autouse=True)
 def init_session():
-    print("init_session begin!")
+    logger.debug("init_session begin!")
     yield
-    print("init_session end!")
+    logger.debug("init_session end!")
 
 
 @pytest.fixture(scope="class", autouse=True)
 def init_class():
-    print("init_class begin!")
+    logger.debug("init_class begin!")
     yield
-    print("init_class end!")
+    logger.debug("init_class end!")
 
 
 @pytest.fixture(scope="function", autouse=True)
-def init_case():
-    print("init_case begin!")
+def init_case(request):
+    logger.debug(f"=>{request.function.__name__}")
+    report_folder = os.path.join(RESOURCE_PATH, "%s_%s" % ({request.function.__name__}, {timestamp_ymd_hms()}))
+    logger.debug(report_folder)
+    create_folder(report_folder)
     yield
-    print("init_case end!")
+    print("case over!")

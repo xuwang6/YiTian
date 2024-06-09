@@ -13,11 +13,9 @@ import os
 import queue
 import threading
 from re import split, compile
-from collect.collector import Collector
-from common import utils
-from common.log import logger
-from write.writer_factory import WriteFactory
-
+from src.collect.collector import Collector
+from src.write.writer_factory import WriteFactory
+from src.common import *
 
 class CpuCollector(Collector):
     def __init__(self, device, core, pkg, save, event):

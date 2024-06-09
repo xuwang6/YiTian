@@ -45,16 +45,16 @@ class BasePage:
 
         def wrapper(self, *args, **kwargs):
             locator = LOCATOR_DIC[args[0].split("_")[0]][args[0]]
-            print("元素对象：" + locator)
+            logger.debug("元素对象：" + locator)
             if locator.startswith("//"):
-                print("------>xpath")
+                logger.debug("------>xpath")
                 self._obj = self.d.xpath(locator)
             else:
                 dic = {}
                 for item in locator.strip().split(","):
                     key, value = item.split("=")
                     self._obj = value.strip('"')
-                print("------>element")
+                logger.debug("------>element")
                 self._obj = self.d(**dic)
             return func(self, *args, **kwargs)
 
@@ -69,7 +69,6 @@ class BasePage:
         """
         self._obj.wait(timeout=10)
         self._obj.click()
-        # self.d(text="Display").click()
 
     def open_app(self, package_name):
         """
