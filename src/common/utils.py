@@ -25,7 +25,7 @@ def timestamp_ymd_hms():
     format timestamp
     :return: 240609_133057
     """
-    timestamp = time.strftime("%y%m%d_%H%M%S", time.localtime())
+    timestamp = time.strftime("%y%m%d-%H%M%S", time.localtime())
     return timestamp
 
 

@@ -76,7 +76,11 @@ class BasePage:
         :param package_name:
         :return:
         """
-        self.d.app_start(package_name)
+        if isinstance(package_name, list):
+            for item in package_name:
+                self.d.app_start(item)
+        else:
+            self.d.app_start(package_name)
         time.sleep(3)
 
     def close_app(self, package_name):
@@ -85,7 +89,11 @@ class BasePage:
         :param package_name:
         :return:
         """
-        self.d.app_stop(package_name)
+        if isinstance(package_name, list):
+            for item in package_name:
+                self.d.app_stop(item)
+        else:
+            self.d.app_stop(package_name)
         time.sleep(1)
 
     def input_text(self, text: str, clear=False, enter=True):
@@ -100,6 +108,13 @@ class BasePage:
         time.sleep(1)
         if enter:
             self.d.press("enter")
+
+    def cpu_core_num(self):
+        """
+        获取CPU核心数
+        :return:
+        """
+        return self.d.shell("cat /proc/cpuinfo | grep 'processor' | wc -l")
 
 
 if __name__ == "__main__":
