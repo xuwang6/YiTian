@@ -15,35 +15,36 @@ import threading
 import time
 
 from src.collect.collector import Collector
-from src.common import utils
+from src.common import *
 from src.common.log import logger
-from src.write.writer_factory import WriteFactory
+from src.write.writer_factory import WriterFactory
 
 
 class MemCollector(Collector):
     def __init__(self, device, pkg, save, event):
-        super().__init__(device, pkg, save, event)
-        self._stop = False
+        super().__init__()
         self.device = device
         self.pkg = pkg
+        self.save = save
+        self.event = event
         self.head = ['时间', 'CPU', '内存']
         self.dur = 1.0
 
     def executor(self):
         self.event.wait()
-        q2 = queue.Queue()
-        factory = WriteFactory("MEM", self.pkg, self.save, q2)
-        t = threading.Thread(target=factory.generate)
+        q = queue.Queue()
+        factory = WriterFactory(self.pkg, self.save, q)
+        t = threading.Thread(target=factory.write_data, args="MEM")
         t.start()
         with open(os.path.join(self.save, "dumpsys_meminfo_%s.log" % self.pkg.replace(":", "-")),
                   mode="w") as meminfo, open(os.path.join(self.save, "free.log"), mode="w") as free:
             while True:
                 begin = time.time()
                 if self._stop:
-                    q2.put("over")
+                    q.put("over")
                     break
                 info = []
-                cur = utils.get_time_yr_sfmms()
+                cur = timestamp_ymd_hms()
                 info.append(cur)
                 mem_info = os.popen(f"adb -s {self.device} shell free -h")
                 for line in mem_info.readlines():
@@ -74,7 +75,7 @@ class MemCollector(Collector):
                         logger.debug("TOTAL PSS<--- %s" % line)
                         info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
                 logger.info(f"Time/Total/Used/Free/PID/PID_JavaHeap/PID_NativeHeap/PID_PSS：{info}")
-                q2.put(info)
+                q.put(info)
                 cost = time.time() - begin
                 logger.debug("耗时：%f" % cost)
                 if self.dur > cost:

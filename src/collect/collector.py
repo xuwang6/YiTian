@@ -8,6 +8,7 @@
 #
 # Copyright (c) 2024, All rights reserved.
 from abc import ABCMeta, abstractmethod
+from src.common import *
 
 
 class Collector(metaclass=ABCMeta):
@@ -15,7 +16,7 @@ class Collector(metaclass=ABCMeta):
     collector抽象类
     """
 
-    def __init__(self, *arg, **kwargs):
+    def __init___(self, *args, **kwargs):
         pass
 
     @abstractmethod
@@ -26,20 +27,6 @@ class Collector(metaclass=ABCMeta):
     def terminate(self):
         pass
 
-#
-# class Collector(ABCMeta):
-#     def __init__(self, device, core, pkg, save, event):
-#         super().__init__()
-#         self.device = device
-#         self.core = core
-#         self.pkg = pkg
-#         self.save = save
-#         self.event = event
-#
-#     @abstractmethod
-#     def executor(self):
-#         pass
-#
-#     @abstractmethod
-#     def terminate(self):
-#         pass
+    @staticmethod
+    def _get_pid(pkg):
+        return adb.adb_shell_command("pidof %s" % pkg)

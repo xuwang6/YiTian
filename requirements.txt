@@ -1,3 +1,6 @@
-uiautomator2
-pytest
+uiautomator2~=3.1.0
+pytest~=8.2.0
+XlsxWriter~=3.2.0
+numpy~=2.0.0
+PyYAML~=6.0.1
 -i https://pypi.mirrors.ustc.edu.cn/simple/

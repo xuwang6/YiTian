@@ -13,25 +13,35 @@ from src.collect.mem_collector import MemCollector
 
 
 class CollectorFactory:
-    def __init__(self, device, core, pkg, save, event):
+    """
+    collector工厂类
+    """
+
+    def __init__(self, device, pkg, save, event):
         self.device = device
-        self.core = core
         self.pkg = pkg
         self.save = save
         self.event = event
+        self.handler = None
 
-    def collect_data(self, name):
+    def begin_collect(self, name):
         """
         收集数据
         :param name:
         :return:
         """
         if name == "CPU":
-            cpu = CpuCollector(self.device, self.core, self.pkg, self.save, self.event)
-            cpu.executor()
+            self.handler = CpuCollector(self.device, self.pkg, self.save, self.event)
         elif name == "MEM":
-            mem = MemCollector(self.device, self.pkg, self.save, self.event)
-            mem.executor()
+            self.handler = MemCollector(self.device, self.pkg, self.save, self.event)
         elif name == "FPS":
-            fps = FpsCollector(self.device, self.pkg, self.save, self.event)
-            fps.executor()
+            self.handler = FpsCollector(self.device, self.pkg, self.save, self.event)
+        else:
+            self.handler = None
+        self.handler.executor()
+
+    def stop_collect(self):
+        """
+        停止收集
+        """
+        self.handler.terminate()

@@ -7,15 +7,12 @@
 # Description       :
 #
 # Copyright (c) 2024, All rights reserved.
-import queue
 import threading
 
 import pytest
 
-# from src.collect.collector_factory import CollectorFactory
+from src.collect.collector_factory import CollectorFactory
 from src.common import *
-
-pkg = ""
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -28,19 +25,18 @@ def init_session():
 @pytest.fixture(scope="class", autouse=True)
 def init_class(request):
     logger.debug("init_class begin!")
-    global pkg
-    pkg = request.param
     yield
     logger.debug("init_class end!")
 
 
 @pytest.fixture(scope="function", autouse=True)
 def init_case(request):
+    event = threading.Event()
     logger.debug(f"=>{request.function.__name__}")
     report_folder = os.path.join(REPORT_PATH, "%s_%s" % (request.function.__name__, timestamp_ymd_hms()))
     create_folder(report_folder)
-    event = queue.Queue()
-    # cpu_mem = CollectorFactory(device, core, pkg, report_folder, event)
-    # cthread = threading.Thread(target=cpu_mem.collect_data("CPUMEM"))
-    yield
+    c = CollectorFactory(adb.device, request.param, report_folder, event)
+    threading.Thread(target=c.begin_collect, args=["CPU"]).start()
+    yield event
+    c.stop_collect()
     print("case over!")

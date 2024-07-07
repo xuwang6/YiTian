@@ -10,6 +10,8 @@
 import os
 import time
 
+import yaml
+
 
 def timestamp_ymd():
     """
@@ -36,3 +38,14 @@ def create_folder(path):
     :return:
     """
     os.makedirs(path, exist_ok=True)
+
+
+def read_yaml(path):
+    """
+    read yaml file
+    """
+    with open(path, encoding="utf8") as f:
+        try:
+            return yaml.safe_load(f)
+        except yaml.YAMLError as e:
+            print(e)

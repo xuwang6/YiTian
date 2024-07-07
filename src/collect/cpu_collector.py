@@ -9,22 +9,30 @@
 # Copyright (c) 2024, All rights reserved.
 
 
-import os
 import queue
 import threading
 from re import split, compile
 from src.collect.collector import Collector
-from src.write.writer_factory import WriteFactory
+from src.write.writer_factory import WriterFactory
 from src.common import *
 
+
 class CpuCollector(Collector):
-    def __init__(self, device, core, pkg, save, event):
-        super().__init__(device, pkg, save, event)
-        self.core = core
+    """
+    CPU数据收集
+    """
+
+    def __init__(self, device, pkg, save, event):
+        super().__init__()
+        self.device = device
+        self.pkg = pkg
+        self.save = save
+        self.event = event
         self._stop = False
         self.dur = 1.0
         self.RE_CPU = compile(
-            r'(\d+)\%cpu\s+(\d+)\%user\s+(\d+)\%nice\s+(\d+)\%sys\s+(\d+)\%idle\s+(\d+)\%iow\s+(\d+)\%irq\s+(\d+)\%sirq\s+(\d+)\%host')
+            r'(\d+)\%cpu\s+(\d+)\%user\s+(\d+)\%nice\s+(\d+)\%sys\s+(\d+)\%idle\s+(\d+)\%iow\s+(\d+)\%irq\s+('
+            r'\d+)\%sirq\s+(\d+)\%host')
 
     def executor(self) -> None:
         """
@@ -34,11 +42,10 @@ class CpuCollector(Collector):
         self.event.wait()
         _flag = True
         pid_list = []
-        q1 = queue.Queue()
-
+        q = queue.Queue()
         #   写入excel
-        factory = WriteFactory("CPU", self.pkg, self.save, q1, self.core)
-        t = threading.Thread(target=factory.generate)
+        factory = WriterFactory(self.pkg, self.save, q)
+        t = threading.Thread(target=factory.write_data, args=["CPU"])
         t.start()
         cmd = f"adb -s {self.device} shell top -b -d {self.dur}"
         for index, item in enumerate(self.pkg):
@@ -48,6 +55,7 @@ class CpuCollector(Collector):
                 return
             pid_list.append(pid)
             # cmd = cmd + f" -p {pid}"
+        logger.debug("PID列表：%s" % str(pid_list))
         logger.debug("执行的命令：%s" % cmd)
         data_list = list(zip(pid_list, self.pkg))
         cpu_data = os.popen(cmd)
@@ -58,7 +66,7 @@ class CpuCollector(Collector):
         with open(os.path.join(self.save, "top.log"), mode="w", encoding="utf-8") as f:
             while True:
                 if self._stop:
-                    q1.put("over")
+                    q.put("over")
                     r = os.popen(f'adb -s %s shell "ps -ef |grep top"' % self.device)
                     for line in r:
                         if f"top -b -d {self.dur}" in line:
@@ -74,7 +82,7 @@ class CpuCollector(Collector):
                 if _flag:
                     info = []
                     tmp_list = []
-                    cur = utils.get_time_yr_sfmms()
+                    cur = timestamp_ymd_hms()
                     info.append(cur)
                     if "Tasks:" in cpu_line or "Mem:" in cpu_line or "Swap:" in cpu_line or "TIME+" in cpu_line:
                         logger.debug("跳过头************ %s" % cpu_line)
@@ -141,7 +149,7 @@ class CpuCollector(Collector):
                 info.append(total_cpu_rate)
                 logger.info(f"CPU信息 ---> {info}")
                 logger.debug("queue==> %s" % info)
-                q1.put(info)
+                q.put(info)
                 total_cpu_rate = 0
 
     def terminate(self):

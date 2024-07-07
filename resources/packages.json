@@ -1,4 +1,5 @@
 {
   "设置": "com.android.settings",
-  "Chrome": "com.android.chrome"
+  "Chrome": "com.android.chrome",
+  "今日头条": "com.ss.android.article.news"
 }

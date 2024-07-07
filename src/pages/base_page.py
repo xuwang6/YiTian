@@ -17,7 +17,7 @@ from src.common import *
 
 class BasePage:
     def __init__(self):
-        self.d = u2.connect(adb.devices[0])
+        self.d = u2.connect(adb.device)
         self._obj = None
 
     #

@@ -8,22 +8,21 @@
 #
 # Copyright (c) 2024, All rights reserved.
 
-import os
 import queue
 import threading
-import time
 
 from src.collect.collector import Collector
-from src.common import utils
+from src.common import *
 from src.common.log import logger
-from src.write.writer_factory import WriteFactory
+from src.write.writer_factory import WriterFactory
 
 
 class FpsCollector(Collector):
     def __init__(self, device, pkg, save, event, freq=1):
-        super().__init__(device, pkg, save, event)
+        super().__init__()
         self.device = device
         self.pkg = pkg
+        self.save = save
         self.event = event
         self._stop = False
         self.refresh_rate = 0
@@ -33,9 +32,9 @@ class FpsCollector(Collector):
     def executor(self) -> None:
         os.popen("adb -s %s shell dumpsys gfxinfo %s reset" % (self.device, self.pkg))
         self.event.wait()
-        q2 = queue.Queue()
-        factory = WriteFactory("FPS", self.pkg, self.save, q2)
-        t = threading.Thread(target=factory.generate)
+        q = queue.Queue()
+        factory = WriterFactory("FPS", self.pkg, self.save, q)
+        t = threading.Thread(target=factory.write_data, args="FPS")
         t.start()
         with open(os.path.join(self.save, "dumpsys_gfxinfo_%s.log" % self.pkg.replace(":", "-")),
                   mode="w") as gfxinfo:
@@ -50,7 +49,7 @@ class FpsCollector(Collector):
             begin_flag = True
             while True:
                 if self._stop:
-                    q2.put("over")
+                    q.put("over")
                     break
                 before = time.time()
                 ignore_line = 0
@@ -84,8 +83,8 @@ class FpsCollector(Collector):
                     time.sleep(self.freq - cost_time)
                 print(len(new_timestamps), "-->", new_timestamps)
                 print(len(timestamps), "==>", timestamps)
-                cur = utils.get_time_yr_sfmms()
-                q2.put([cur, self.refresh_rate, new_timestamps])
+                cur = timestamp_ymd_hms()
+                q.put([cur, self.refresh_rate, new_timestamps])
 
     def terminate(self):
         self._stop = True
