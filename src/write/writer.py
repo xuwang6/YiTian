@@ -16,10 +16,8 @@ class Writer(metaclass=ABCMeta):
     writer抽象类
     """
 
-    def __init___(self, pkg, save, data):
-        self.pkg = pkg
-        self.save = save
-        self.data = data
+    def __init___(self, *args, **kwargs):
+        pass
 
     @abstractmethod
     def generate(self):

@@ -30,13 +30,16 @@ class WriterFactory:
         :return:
         """
         if name == "CPU":
+            print("----------------00---------------", self.pkg, self.save, self.data)
             self.handler = CpuWriter(self.pkg, self.save, self.data)
+            print("----------------01---------------", self.pkg, self.save, self.data)
         elif name == "MEM":
             self.handler = MemWriter(self.pkg, self.save, self.data)
         elif name == "FPS":
             self.handler = FpsWriter(self.pkg, self.save, self.data)
         else:
             self.handler = None
+        print("----------------02---------------", self.pkg, self.save, self.data)
         self.handler.generate()
 
     def terminate(self):

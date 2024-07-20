@@ -18,7 +18,7 @@ page = ChromePage()
 
 
 class TestCase:
-    @pytest.mark.parametrize("init_case", page.pkg, indirect=True)
+    @pytest.mark.parametrize("init_case", [page.pkg], indirect=True)
     def test_chrome_cpu_mem_search(self, init_case):
         page.close_app(page.pkg)
         page.open_app(page.pkg)

@@ -19,7 +19,10 @@ from src.write.writer import Writer
 
 class CpuWriter(Writer):
     def __init__(self, pkg, save, data):
-        super().__init__(pkg, save, data)
+        super().__init__()
+        self.pkg = pkg
+        self.save = save
+        self.data = data
         self.csv_name = "cpu_top.csv"
         self.xlsx_name = "CPU-" + str(self.pkg).replace(":", "_") + "-" + self.save.split("-")[-1] + ".xlsx"
         # 报告目录路径
@@ -28,7 +31,8 @@ class CpuWriter(Writer):
             TOTAL_DMIPS = 100000
         else:
             TOTAL_DMIPS = -1
-        self.dmips = TOTAL_DMIPS / (adb.cpu_core_num * 100)
+        self.dmips = TOTAL_D
+        MIPS / (int(adb.cpu_core_num) * 100)
         logger.info("设备型号：%s，总算力：%d，百分比转化DMIPS:----->%f" % (yaml_model, TOTAL_DMIPS, self.dmips))
         self.column_dic = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H", 8: "I", 9: "J", 10: "K",
                            11: "L", 12: "M", 13: "N", 14: "O", 15: "P", 16: "Q", 17: "R", 18: "S", 19: "T", 20: "U",
@@ -36,8 +40,10 @@ class CpuWriter(Writer):
 
     def generate(self):
         try:
+            print("-------------------1---------------------")
             self._write_csv(self.csv_name)
         finally:
+            print("-------------------2---------------------")
             self._write_excel(self.xlsx_name)
 
     def _write_excel(self, name):
@@ -135,6 +141,7 @@ class CpuWriter(Writer):
         with open(save, 'a+') as df:
             while True:
                 info_list = self.data.get()
+                logger.debug("接收：" + str(info_list))
                 if _flag:
                     size = len(info_list) - 1
                     if size > 8:
