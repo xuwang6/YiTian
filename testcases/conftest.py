@@ -37,6 +37,7 @@ def init_case(request):
     create_folder(report_folder)
     c = CollectorFactory(adb.device, request.param, report_folder, event)
     threading.Thread(target=c.begin_collect, args=["CPU"]).start()
+    threading.Thread(target=c.begin_collect, args=["MEM"]).start()
     yield event
     c.stop_collect()
     print("case over!")

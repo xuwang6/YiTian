@@ -9,6 +9,8 @@
 """
 
 import csv
+import os.path
+
 import xlsxwriter
 from numpy import mean
 from src.common import *
@@ -17,7 +19,10 @@ from src.write.writer import Writer
 
 class FpsWriter(Writer):
     def __init__(self, pkg, save, data):
-        super().__init__(self, pkg, save, data)
+        super().__init__()
+        self.pkg = pkg
+        self.save = save
+        self.data = data
         self.head = ['时间', 'FPS', 'jank']
         self.csv_name = "fps.csv"
         self.xlsx_name = "FPS-" + str(self.pkg).replace(":", "_") + "-" + self.save.split("-")[-1] + ".xlsx"
@@ -38,7 +43,7 @@ class FpsWriter(Writer):
         生成cpu数据xlsx
         :return:
         """
-        rows = self._read_csv(self.csv_name)
+        rows = self._read_csv(os.path.join(self.save, self.csv_name))
         new_save = os.path.join(self.save, name)
         fps = []
         jank = []

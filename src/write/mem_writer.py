@@ -19,7 +19,10 @@ from src.write.writer import Writer
 
 class MemWriter(Writer):
     def __init__(self, pkg, save, data):
-        super().__init__(pkg, save, data)
+        super().__init__()
+        self.pkg = pkg
+        self.save = save
+        self.data = data
         self.csv_name = "mem_%s.csv" % self.pkg
         self.xlsx_name = "MEM-" + str(self.pkg).replace(":", "_") + "-" + self.save.split("-")[-1] + ".xlsx"
 
@@ -38,7 +41,7 @@ class MemWriter(Writer):
         数据写入excel文件
         :return:
         """
-        rows = self._read_csv(self.csv_name)
+        rows = self._read_csv(os.path.join(self.save, self.csv_name))
         new_save = os.path.join(self.save, name)
         logger.info("文件地址：%s " % new_save)
         head = ['时间', '系统Total', '系统Used', '系统Free', 'PID', 'PID_JavaHeap(MB)', 'PID_NativeHeap(MB)',

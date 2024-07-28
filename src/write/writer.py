@@ -38,12 +38,13 @@ class Writer(metaclass=ABCMeta):
         """
         pass
 
-    def _read_csv(self, name):
+    @staticmethod
+    def _read_csv(name):
         """
         读取csv文件
         """
         lines = []
-        with open(os.path.join(self.save, name), encoding="utf8", mode="r") as f:
+        with open(os.path.join(name), encoding="utf8", mode="r") as f:
             for line in f:
-                lines.append(line)
+                lines.append(line.split(","))
         return lines

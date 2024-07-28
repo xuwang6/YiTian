@@ -31,8 +31,7 @@ class CpuWriter(Writer):
             TOTAL_DMIPS = 100000
         else:
             TOTAL_DMIPS = -1
-        self.dmips = TOTAL_D
-        MIPS / (int(adb.cpu_core_num) * 100)
+        self.dmips = TOTAL_DMIPS / (int(adb.cpu_core_num) * 100)
         logger.info("设备型号：%s，总算力：%d，百分比转化DMIPS:----->%f" % (yaml_model, TOTAL_DMIPS, self.dmips))
         self.column_dic = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H", 8: "I", 9: "J", 10: "K",
                            11: "L", 12: "M", 13: "N", 14: "O", 15: "P", 16: "Q", 17: "R", 18: "S", 19: "T", 20: "U",
@@ -40,10 +39,8 @@ class CpuWriter(Writer):
 
     def generate(self):
         try:
-            print("-------------------1---------------------")
             self._write_csv(self.csv_name)
         finally:
-            print("-------------------2---------------------")
             self._write_excel(self.xlsx_name)
 
     def _write_excel(self, name):
@@ -51,8 +48,8 @@ class CpuWriter(Writer):
         生成cpu数据xlsx
         :return:
         """
-        rows = self._read_csv(self.csv_name)
-        new_save = os.path.join(self.xlsx_name)
+        rows = self._read_csv(os.path.join(self.save, self.csv_name))
+        new_save = os.path.join(self.save, self.xlsx_name)
         logger.info("文件地址：%s " % new_save)
         workbook = xlsxwriter.Workbook(new_save)
         try:

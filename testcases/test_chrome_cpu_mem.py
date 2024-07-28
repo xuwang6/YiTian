@@ -23,9 +23,10 @@ class TestCase:
         page.close_app(page.pkg)
         page.open_app(page.pkg)
         init_case.set()
-        logger.info("点击输入框...")
-        page.wait_click("Chrome_EDIT_搜索框")
-        page.input_text("www.baidu.com", clear=True, enter=True)
+        time.sleep(20)
+        # logger.info("点击输入框...")
+        # page.wait_click("Chrome_EDIT_搜索框")
+        # page.input_text("www.baidu.com", clear=True, enter=True)
 
 
 if __name__ == "__main__":
