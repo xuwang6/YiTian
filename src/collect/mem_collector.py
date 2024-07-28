@@ -29,12 +29,14 @@ class MemCollector(Collector):
         self.event = event
         self.head = ['时间', 'CPU', '内存']
         self.dur = 1.0
+        self.dur = 1.0
+        self._stop = False
 
     def executor(self):
         self.event.wait()
         q = queue.Queue()
         factory = WriterFactory(self.pkg, self.save, q)
-        t = threading.Thread(target=factory.write_data, args="MEM")
+        t = threading.Thread(target=factory.write_data, args=["MEM"])
         t.start()
         with open(os.path.join(self.save, "dumpsys_meminfo_%s.log" % self.pkg.replace(":", "-")),
                   mode="w") as meminfo, open(os.path.join(self.save, "free.log"), mode="w") as free:
@@ -56,6 +58,7 @@ class MemCollector(Collector):
                         info.append(tmp[1])
                         info.append(tmp[2])
                         info.append(tmp[3])
+                print("---->",self.pkg)
                 pid = self._get_pid(self.pkg)
                 if pid == 0:
                     logger.debug(f"未发现应用{self.pkg}，请确认是否正常运行！！")
