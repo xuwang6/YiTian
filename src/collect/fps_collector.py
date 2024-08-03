@@ -33,8 +33,8 @@ class FpsCollector(Collector):
         os.popen("adb -s %s shell dumpsys gfxinfo %s reset" % (self.device, self.pkg))
         self.event.wait()
         q = queue.Queue()
-        factory = WriterFactory("FPS", self.pkg, self.save, q)
-        t = threading.Thread(target=factory.write_data, args="FPS")
+        factory = WriterFactory(self.pkg, self.save, q)
+        t = threading.Thread(target=factory.write_data, args=["FPS"])
         t.start()
         with open(os.path.join(self.save, "dumpsys_gfxinfo_%s.log" % self.pkg.replace(":", "-")),
                   mode="w") as gfxinfo:

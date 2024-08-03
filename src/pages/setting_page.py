@@ -11,10 +11,10 @@ from src.pages.base_page import BasePage
 from src.common import *
 
 
-class ChromePage(BasePage):
+class SettingPage(BasePage):
     def __init__(self):
-        super(ChromePage, self).__init__()
-        self.pkg = [PACKAGES_DIC["Chrome"]]
+        super().__init__()
+        self.pkg = [PACKAGES_DIC["设置"]]
 
     def search(self):
         pass

@@ -7,27 +7,26 @@
 # Description       :
 #
 # Copyright (c) 2024, All rights reserved.
+import random
 import time
 
 import pytest
 
-from src.pages.chrome_page import ChromePage
+from src.pages.setting_page import SettingPage
 from src.common import *
 
-page = ChromePage()
+page = SettingPage()
 
 
 class TestCase:
     @pytest.mark.parametrize("init_case", [page.pkg], indirect=True)
-    def test_chrome_cpu_mem_search(self, init_case):
+    def test_setting_app(self, init_case):
         page.close_app(page.pkg)
         page.open_app(page.pkg)
         init_case.set()
-        time.sleep(20)
-        # logger.info("点击输入框...")
-        # page.wait_click("Chrome_EDIT_搜索框")
-        # page.input_text("www.baidu.com", clear=True, enter=True)
+        for _ in range(20):
+            page.ele_wait_swipe("设置_VIEW_主页", random.choice(["up", "down"]))
 
 
 if __name__ == "__main__":
-    pytest.main(["-vs", "test_chrome_cpu_mem.py"])
+    pytest.main(["-vs", "test_setting_app.py"])

@@ -61,7 +61,7 @@ class BasePage:
         return wrapper
 
     @_create_obj
-    def wait_click(self, locator):
+    def ele_wait_click(self, locator):
         """
         等待并点击
         :param locator:
@@ -69,6 +69,17 @@ class BasePage:
         """
         self._obj.wait(timeout=10)
         self._obj.click()
+
+    @_create_obj
+    def ele_wait_swipe(self, locator, direction):
+        """
+        等待并滑动
+        :param locator:
+        :param direction: one of ("left", "right", "up", "down")
+        :return:
+        """
+        self._obj.wait(timeout=10)
+        self._obj.swipe(direction)
 
     def open_app(self, package_name):
         """
@@ -81,7 +92,7 @@ class BasePage:
                 self.d.app_start(item)
         else:
             self.d.app_start(package_name)
-        time.sleep(3)
+        time.sleep(5)
 
     def close_app(self, package_name):
         """
@@ -121,5 +132,5 @@ if __name__ == "__main__":
     bp = BasePage()
     bp.close_app(PACKAGES_DIC["Chrome"])
     bp.open_app(PACKAGES_DIC["Chrome"])
-    bp.wait_click("Chrome_EDIT_搜索框")
+    bp.ele_wait_click("Chrome_EDIT_搜索框")
     bp.input_text("www.baidu.com", clear=True, enter=True)
