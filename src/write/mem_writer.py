@@ -44,19 +44,20 @@ class MemWriter(Writer):
         rows = self._read_csv(os.path.join(self.save, self.csv_name))
         new_save = os.path.join(self.save, name)
         logger.info("文件地址：%s " % new_save)
-        head = ['时间', '系统Total', '系统Used', '系统Free', 'PID', 'PID_JavaHeap(MB)', 'PID_NativeHeap(MB)',
-                'PID_PSS(MB)']
+        head = ['Time', 'Total', 'Used', 'Free', 'PID', 'PID_JavaHeap(MB)', 'PID_NativeHeap(MB)',
+                "PID_Code(MB)", "PID_Stack(MB)", "PID_Graphics(MB)", "PID_PrivateOther(MB)", "PID_System(MB)",
+                "PID_Unknown(MB)", 'PID_PSS(MB)']
         workbook = xlsxwriter.Workbook(new_save)
         try:
             worksheet = workbook.add_worksheet("data")
-            worksheet.set_column('A:H', 12)  # 设置列宽
+            worksheet.set_column('A:H', 8)  # 设置列宽
             # 自定义样式，加粗
             style = workbook.add_format()
             style.set_font("等线")
             style.set_num_format('0.000')  # 格式化数据格式为小数点后两位
             style.set_align('left')  # 设置对齐方式
             worksheet.write_row('A1', head, style)  # 写入表头
-            line, size = 1, 7
+            line, size = 1, 14
             total_list, used_list, free_list = [], [], []
             java_heap_list, native_heap_list, pss_list = [], [], []
             for i, row in enumerate(rows):
@@ -82,6 +83,18 @@ class MemWriter(Writer):
                         native_heap_list.append(float(value))
                         worksheet.write(line, index, float(value), style)
                     if index == 7:
+                        worksheet.write(line, index, float(value), style)
+                    if index == 8:
+                        worksheet.write(line, index, float(value), style)
+                    if index == 9:
+                        worksheet.write(line, index, float(value), style)
+                    if index == 10:
+                        worksheet.write(line, index, float(value), style)
+                    if index == 11:
+                        worksheet.write(line, index, float(value), style)
+                    if index == 12:
+                        worksheet.write(line, index, float(value), style)
+                    if index == 13:
                         pss_list.append(float(value))
                         worksheet.write(line, index, float(value), style)
                 line = line + 1
@@ -139,7 +152,9 @@ class MemWriter(Writer):
             workbook.close()
 
     def _write_csv(self, name):
-        head = ['datetime', "total", "used", "free", "pid", "java heap(MB)", "native heap(MB)", "pss(MB)"]
+        head = ['time', "total", "used", "free", "pid", "java heap(MB)", "native heap(MB)", "code(MB)",
+                "stack(MB)", "graphics(MB)", "private other(MB)", "system(MB)", "unknown(MB)",
+                "pss(MB)"]
         save = os.path.join(self.save, name)
         with open(save, 'a+') as df:
             csv.writer(df, lineterminator='\n').writerow(head)

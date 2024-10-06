@@ -83,7 +83,7 @@ class FpsCollector(Collector):
                     time.sleep(self.freq - cost_time)
                 print(len(new_timestamps), "-->", new_timestamps)
                 print(len(timestamps), "==>", timestamps)
-                cur = timestamp_ymd_hms()
+                cur = timestamp_hms()
                 q.put([cur, self.refresh_rate, new_timestamps])
 
     def terminate(self):

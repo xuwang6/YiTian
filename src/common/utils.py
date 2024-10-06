@@ -22,6 +22,15 @@ def timestamp_ymd():
     return timestamp
 
 
+def timestamp_hms():
+    """
+    format timestamp
+    :return: 13:30:57
+    """
+    timestamp = time.strftime("%H:%M:%S", time.localtime())
+    return timestamp
+
+
 def timestamp_ymd_hms():
     """
     format timestamp

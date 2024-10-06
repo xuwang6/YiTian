@@ -25,7 +25,9 @@ class CpuWriter(Writer):
         self.data = data
         self.csv_name = "cpu_top.csv"
         self.xlsx_name = "CPU-" + str(self.pkg).replace(":", "_") + "-" + self.save.split("-")[-1] + ".xlsx"
-        # 报告目录路径
+        self.dmips = 1  # 默认不开启算力，使用百分比
+        # 需要开启算力
+        """
         yaml_model = read_yaml(os.path.join(CONFIG_PATH, "run.yaml"))["model"]
         if yaml_model == "V2148A":
             TOTAL_DMIPS = 100000
@@ -33,6 +35,7 @@ class CpuWriter(Writer):
             TOTAL_DMIPS = -1
         self.dmips = TOTAL_DMIPS / (int(adb.cpu_core_num) * 100)
         logger.info("设备型号：%s，总算力：%d，百分比转化DMIPS:----->%f" % (yaml_model, TOTAL_DMIPS, self.dmips))
+        """
         self.column_dic = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H", 8: "I", 9: "J", 10: "K",
                            11: "L", 12: "M", 13: "N", 14: "O", 15: "P", 16: "Q", 17: "R", 18: "S", 19: "T", 20: "U",
                            21: "V", 22: "W", 23: "X", 24: "Y", 25: "Z", 26: "AA", 27: "AB", 28: "AC", 29: "AD"}
@@ -54,7 +57,7 @@ class CpuWriter(Writer):
         workbook = xlsxwriter.Workbook(new_save)
         try:
             worksheet = workbook.add_worksheet("data")
-            worksheet.set_column('A:P', 15)  # 设置列宽
+            worksheet.set_column('A:P', 8)  # 设置列宽
             # 自定义样式，加粗
             style = workbook.add_format()
             style.set_font("等线")
@@ -70,7 +73,10 @@ class CpuWriter(Writer):
                             graph_list.append(j)
                         if i == 0 and "%" in item:
                             modify_list.append(j)
-                            worksheet.write(i, j, item.replace("%", "[DMIPS]"), style)
+                            if self.dmips == 1:
+                                worksheet.write(i, j, item, style)
+                            else:
+                                worksheet.write(i, j, item.replace("%", "[DMIPS]"), style)
                         elif i != 0 and j in modify_list:
                             item = float(item) * self.dmips
                             worksheet.write(i, j, item, style)
@@ -132,7 +138,7 @@ class CpuWriter(Writer):
 
     def _write_csv(self, name):
         _flag = True
-        head = ['datetime', "cpu%", "user%", "nice%", "sys%", "idle%", "iow%", "irq%", "sirq%", "host%", "pid",
+        head = ['time', "cpu%", "user%", "nice%", "sys%", "idle%", "iow%", "irq%", "sirq%", "host%", "pid",
                 "package", "pid_cpu%"]
         save = os.path.join(self.save, name)
         with open(save, 'a+') as df:

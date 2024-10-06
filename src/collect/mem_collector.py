@@ -46,7 +46,7 @@ class MemCollector(Collector):
                     q.put("over")
                     break
                 info = []
-                cur = timestamp_ymd_hms()
+                cur = timestamp_hms()
                 info.append(cur)
                 mem_info = os.popen(f"adb -s {self.device} shell free -h")
                 for line in mem_info.readlines():
@@ -58,7 +58,7 @@ class MemCollector(Collector):
                         info.append(tmp[1])
                         info.append(tmp[2])
                         info.append(tmp[3])
-                print("---->",self.pkg)
+                print("---->", self.pkg)
                 pid = self._get_pid(self.pkg)
                 if pid == 0:
                     logger.debug(f"未发现应用{self.pkg}，请确认是否正常运行！！")
@@ -70,14 +70,43 @@ class MemCollector(Collector):
                     meminfo.write(line)
                     if "Java Heap:" in line:
                         logger.debug("Java Heap<---%s" % line)
-                        info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
+                        # info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
+                        info.append(float(line.split(":")[-1][:9]) / 1000)
                     if "Native Heap:" in line:
                         logger.debug("Native Heap<---%s" % line)
-                        info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
-                    if "TOTAL SWAP" in line:
+                        # info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
+                        info.append(float(line.split(":")[-1][:9]) / 1000)
+                    if "Code:" in line:
+                        logger.debug("Code<---%s" % line)
+                        # info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
+                        info.append(float(line.split(":")[-1][:9]) / 1000)
+                    if "Stack:" in line:
+                        logger.debug("Stack<---%s" % line)
+                        # info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
+                        info.append(float(line.split(":")[-1][:9]) / 1000)
+                    if "Graphics:" in line:
+                        logger.debug("Graphics<---%s" % line)
+                        # info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
+                        info.append(float(line.split(":")[-1][:9]) / 1000)
+                    if "Private Other:" in line:
+                        logger.debug("Private Other<---%s" % line)
+                        # info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
+                        info.append(float(line.split(":")[-1][:9]) / 1000)
+                    if "System:" in line:
+                        logger.debug("System<---%s" % line)
+                        # info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
+                        info.append(float(line.split(":")[-1][:9]) / 1000)
+                    if "Unknown:" in line:
+                        logger.debug("Unknown<---%s" % line)
+                        try:
+                            info.append(float(line.split(":")[-1][:9]) / 1000)
+                        except ValueError:
+                            info.append(0.0)
+                    if "TOTAL PSS:" in line:
                         logger.debug("TOTAL PSS<--- %s" % line)
                         info.append(float(re.findall(r"(\d+)", line)[0]) / 1000)
-                logger.info(f"Time/Total/Used/Free/PID/PID_JavaHeap/PID_NativeHeap/PID_PSS：{info}")
+                logger.info(f"Time/Total/Used/Free/PID/PID_JavaHeap/PID_NativeHeap/PID_JavaHeap/"
+                            f"PID_Code/PID_Stack/PID_Graphics/PID_PrivateOther/PID_System/PID_Unknown/PID_PSS：{info}")
                 q.put(info)
                 cost = time.time() - begin
                 logger.debug("耗时：%f" % cost)

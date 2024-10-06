@@ -82,7 +82,7 @@ class CpuCollector(Collector):
                 if _flag:
                     info = []
                     tmp_list = []
-                    cur = timestamp_ymd_hms()
+                    cur = timestamp_hms()
                     info.append(cur)
                     if "Tasks:" in cpu_line or "Mem:" in cpu_line or "Swap:" in cpu_line or "TIME+" in cpu_line:
                         logger.debug("跳过头************ %s" % cpu_line)

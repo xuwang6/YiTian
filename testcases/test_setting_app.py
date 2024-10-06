@@ -19,12 +19,14 @@ page = SettingPage()
 
 
 class TestCase:
+    @pytest.mark.smt
     @pytest.mark.parametrize("init_case", [page.pkg], indirect=True)
     def test_setting_app(self, init_case):
         page.close_app(page.pkg)
         page.open_app(page.pkg)
         init_case.set()
-        for _ in range(20):
+        for index in range(50):
+            logger.info(f"这是第{index + 1}轮...")
             page.ele_wait_swipe("设置_VIEW_主页", random.choice(["up", "down"]))
 
 

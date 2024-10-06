@@ -23,7 +23,7 @@ class FpsWriter(Writer):
         self.pkg = pkg
         self.save = save
         self.data = data
-        self.head = ['时间', 'FPS', 'jank']
+        self.head = ['Time', 'FPS', 'Jank']
         self.csv_name = "fps.csv"
         self.xlsx_name = "FPS-" + str(self.pkg).replace(":", "_") + "-" + self.save.split("-")[-1] + ".xlsx"
         self.jank_threshold = 0
@@ -50,7 +50,7 @@ class FpsWriter(Writer):
         workbook = xlsxwriter.Workbook(new_save)
         try:
             worksheet = workbook.add_worksheet("data")
-            worksheet.set_column('A:A', 20)  # 设置列宽
+            worksheet.set_column('B:B', 15)  # 设置列宽
             # 自定义样式，加粗
             style = workbook.add_format()
             style.set_font("等线")
@@ -104,7 +104,7 @@ class FpsWriter(Writer):
 
     def _write_csv(self, name):
         _flag = True
-        head = ['datetime', "package_name", "fps", "jank"]
+        head = ['time', "package_name", "fps", "jank"]
         save = os.path.join(self.save, name)
         with open(save, 'a+') as df:
             while True:
