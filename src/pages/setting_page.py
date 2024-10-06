@@ -14,7 +14,8 @@ from src.common import *
 class SettingPage(BasePage):
     def __init__(self):
         super().__init__()
-        self.pkg = [PACKAGES_DIC["设置"]]
+        self.pkg1 = PACKAGES_DIC["设置"]
+        self.pkg2 = PACKAGES_DIC["Chrome"]
 
     def search(self):
         pass

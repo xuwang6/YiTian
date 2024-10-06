@@ -10,6 +10,7 @@
 
 
 import queue
+import subprocess
 import threading
 from re import split, compile
 from src.collect.collector import Collector
@@ -58,7 +59,7 @@ class CpuCollector(Collector):
         logger.debug("PID列表：%s" % str(pid_list))
         logger.debug("执行的命令：%s" % cmd)
         data_list = list(zip(pid_list, self.pkg))
-        cpu_data = os.popen(cmd)
+        cpu_data = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         info = None
         tmp_list = None
         total_cpu_rate = 0
@@ -67,17 +68,9 @@ class CpuCollector(Collector):
             while True:
                 if self._stop:
                     q.put("over")
-                    r = os.popen(f'adb -s %s shell "ps -ef |grep top"' % self.device)
-                    for line in r:
-                        if f"top -b -d {self.dur}" in line:
-                            logger.debug("要杀死的top进程：%s" % line)
-                            tmp_list = line.split(" ")
-                            while "" in tmp_list:  # 判断是否有空值在列表中
-                                tmp_list.remove("")
-                            logger.debug("adb -s %s shell kill -9 %s" % (self.device, tmp_list[1]))
-                            os.popen("adb -s %s shell kill -9 %s" % (self.device, tmp_list[1]))
+                    cpu_data.terminate()
                     break
-                cpu_line = cpu_data.readline().strip()
+                cpu_line = cpu_data.stdout.readline().strip()
                 f.write(cpu_line + "\n")
                 if _flag:
                     info = []

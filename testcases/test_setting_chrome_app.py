@@ -20,8 +20,8 @@ page = SettingPage()
 
 class TestCase:
     @pytest.mark.smt
-    @pytest.mark.parametrize("init_case", [page.pkg1], indirect=True)
-    def test_setting_app(self, init_case):
+    @pytest.mark.parametrize("init_case", [[page.pkg1, page.pkg2]], indirect=True)
+    def test_setting_chrome_app(self, init_case):
         page.close_app(page.pkg1)
         page.open_app(page.pkg1)
         init_case.set()
@@ -31,4 +31,4 @@ class TestCase:
 
 
 if __name__ == "__main__":
-    pytest.main(["-vs", "test_setting_app.py"])
+    pytest.main(["-vs", "test_setting_chrome_app.py"])

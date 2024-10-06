@@ -33,7 +33,7 @@ class CollectorFactory:
         if name == "CPU":
             self.handler = CpuCollector(self.device, self.pkg, self.save, self.event)
         elif name == "MEM":
-            self.handler = MemCollector(self.device, self.pkg[0], self.save, self.event)
+            self.handler = MemCollector(self.device, self.pkg, self.save, self.event)
         elif name == "FPS":
             self.handler = FpsCollector(self.device, self.pkg[0], self.save, self.event)
         else:
