@@ -8,8 +8,6 @@
 #
 # Copyright (c) 2024, All rights reserved.
 import random
-import time
-
 import pytest
 
 from src.pages.setting_page import SettingPage
@@ -20,7 +18,7 @@ page = SettingPage()
 
 class TestCase:
     @pytest.mark.smt
-    @pytest.mark.parametrize("init_case", [page.pkg1], indirect=True)
+    @pytest.mark.parametrize("init_case", [[page.pkg1]], indirect=True)
     def test_setting_app(self, init_case):
         page.close_app(page.pkg1)
         page.open_app(page.pkg1)

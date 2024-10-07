@@ -121,9 +121,9 @@ class MemWriter(Writer):
             chart.set_x_axis({'name': "时间(s)"})
             chart.set_y_axis({'name': "数值"})
             chart.add_series({
-                'name': '=data!$H$1',
+                'name': '=data!$N$1',
                 'categories': f'=data!$A$2:$A${len(pss_list)}',
-                'values': f'=data!$H$2:$H${len(pss_list)}',
+                'values': f'=data!$N$2:$N${len(pss_list)}',
             })
             worksheet.insert_chart(0, size + 4, chart)
             # 生成Java Heap折线图

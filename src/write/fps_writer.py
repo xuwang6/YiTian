@@ -24,7 +24,7 @@ class FpsWriter(Writer):
         self.save = save
         self.data = data
         self.head = ['Time', 'FPS', 'Jank']
-        self.csv_name = "fps.csv"
+        self.csv_name = "fps_%s.csv" % self.pkg
         self.xlsx_name = "FPS-" + str(self.pkg).replace(":", "_") + "-" + self.save.split("-")[-1] + ".xlsx"
         self.jank_threshold = 0
 
@@ -74,8 +74,8 @@ class FpsWriter(Writer):
             size = len(rows[0])
             worksheet.write(0, size + 1, "fps最大值：%.1f" % fps_max, style)
             worksheet.write(1, size + 1, "fps平均值：%.1f" % fps_avg, style)
-            worksheet.write(20, size + 1, "jank最大值：%.1f" % jank_max, style)
-            worksheet.write(21, size + 1, "jank平均值：%.1f" % jank_avg, style)
+            worksheet.write(18, size + 1, "jank最大值：%.1f" % jank_max, style)
+            worksheet.write(19, size + 1, "jank平均值：%.1f" % jank_avg, style)
             # 生成整机fps折线图
             chart = workbook.add_chart({'type': 'line'})
             chart.set_title({'name': "%s fps" % self.pkg})
@@ -97,7 +97,7 @@ class FpsWriter(Writer):
                 'categories': f'=data!$A$2:$A${len(jank)}',
                 'values': f'=data!$D$2:$D${len(jank)}',
             })
-            worksheet.insert_chart(20, size + 4, chart)
+            worksheet.insert_chart(18, size + 4, chart)
 
         finally:
             workbook.close()

@@ -36,22 +36,28 @@ def init_case(request):
     report_folder = os.path.join(REPORT_PATH, "%s_%s" % (request.function.__name__, timestamp_ymd_hms()))
     create_folder(report_folder)
     cpu = CollectorFactory(adb.device, request.param, report_folder, event)
+    threading.Thread(target=cpu.begin_collect, args=["CPU"]).start()
     mem_threads = []
+    fps_threads = []
     if type(request.param) is list:
-        for index, item in enumerate(request.param):
-            index = CollectorFactory(adb.device, item, report_folder, event)
-            threading.Thread(target=index.begin_collect, args=["MEM"]).start()
-            mem_threads.append(index)
+        for item in request.param:
+            mem_item = CollectorFactory(adb.device, item, report_folder, event)
+            fps_item = CollectorFactory(adb.device, item, report_folder, event)
+            threading.Thread(target=mem_item.begin_collect, args=["MEM"]).start()
+            threading.Thread(target=fps_item.begin_collect, args=["FPS"]).start()
+            mem_threads.append(mem_item)
+            fps_threads.append(fps_item)
     else:
         mem = CollectorFactory(adb.device, request.param, report_folder, event)
+        fps = CollectorFactory(adb.device, request.param, report_folder, event)
         threading.Thread(target=mem.begin_collect, args=["MEM"]).start()
+        threading.Thread(target=fps.begin_collect, args=["FPS"]).start()
         mem_threads.append(mem)
-    fps = CollectorFactory(adb.device, request.param, report_folder, event)
-    threading.Thread(target=cpu.begin_collect, args=["CPU"]).start()
-    threading.Thread(target=fps.begin_collect, args=["FPS"]).start()
+        fps_threads.append(fps)
     yield event
     cpu.stop_collect()
     for item in mem_threads:
         item.stop_collect()
-    fps.stop_collect()
+    for item in fps_threads:
+        item.stop_collect()
     print("case over!")

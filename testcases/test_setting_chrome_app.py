@@ -8,8 +8,6 @@
 #
 # Copyright (c) 2024, All rights reserved.
 import random
-import time
-
 import pytest
 
 from src.pages.setting_page import SettingPage
@@ -25,7 +23,7 @@ class TestCase:
         page.close_app(page.pkg1)
         page.open_app(page.pkg1)
         init_case.set()
-        for index in range(10):
+        for index in range(5):
             logger.info(f"这是第{index + 1}轮...")
             page.ele_wait_swipe("设置_VIEW_主页", random.choice(["up", "down"]))
 
