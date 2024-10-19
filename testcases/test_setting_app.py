@@ -17,7 +17,7 @@ page = SettingPage()
 
 
 class TestCase:
-    @pytest.mark.smt
+    @pytest.mark.full
     @pytest.mark.parametrize("init_case", [[page.pkg1]], indirect=True)
     def test_setting_app(self, init_case):
         page.close_app(page.pkg1)

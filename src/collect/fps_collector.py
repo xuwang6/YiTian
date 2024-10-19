@@ -42,7 +42,7 @@ class FpsCollector(Collector):
                 try:
                     r = os.popen("adb -s %s shell dumpsys SurfaceFlinger --latency" % self.device)
                     self.refresh_rate = float(r.readline().strip()) / self.nanoseconds_per_second  # 毫秒
-                    logger.info("屏幕刷新率时间:%f" % self.refresh_rate)
+                    logger.debug("屏幕刷新率时间:%f" % self.refresh_rate)
                 except ValueError as e:
                     print(e)
             last_vsync_time = 0
@@ -69,7 +69,7 @@ class FpsCollector(Collector):
                                          line.strip().split(",")[13]]
                             timestamp = [int(item) / self.nanoseconds_per_second for item in info_data]
                             timestamps.append(timestamp)
-                print(last_vsync_time)
+                logger.debug(last_vsync_time)
                 for item in timestamps:
                     if item[1] > last_vsync_time:
                         new_timestamps.append(item)
@@ -81,8 +81,8 @@ class FpsCollector(Collector):
                 cost_time = time.time() - before
                 if cost_time < self.freq:
                     time.sleep(self.freq - cost_time)
-                print(len(new_timestamps), "-->", new_timestamps)
-                print(len(timestamps), "==>", timestamps)
+                logger.debug(str(len(new_timestamps)) + "-->" + str(new_timestamps))
+                logger.debug(str(len(timestamps)) + "==>" + str(timestamps))
                 cur = timestamp_hms()
                 q.put([cur, self.refresh_rate, new_timestamps])
 

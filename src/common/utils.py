@@ -58,3 +58,19 @@ def read_yaml(path):
             return yaml.safe_load(f)
         except yaml.YAMLError as e:
             print(e)
+
+
+def modify_yaml(path, key, value):
+    """
+    modify yaml file
+    """
+    with open(path, encoding="utf8", mode="r") as f:
+        try:
+            data = yaml.safe_load(f)
+        except yaml.YAMLError as e:
+            print(e)
+    data[key] = value
+    new_yaml = yaml.dump(data)
+    print(new_yaml)
+    with open(path, encoding="utf8", mode="w") as f:
+        f.write(new_yaml)
